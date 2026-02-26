@@ -1,14 +1,33 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Descargar Datos</title>
+  <meta charset="UTF-8">
+  <title>Dashboard Biométrico IMPLACOR</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Descargar CSV</h1>
-<a href="https://api.github.com/repos/202000790-alt/biometrico2/contents/registros.csv" download>
-  <button>Descargar CSV</button>
-</a>
+
+  <div class="container">
+    <h1>📊 Reloj Biométrico IMPLACOR</h1>
+
+    <div class="card">
+      <h2>Registros de Acceso</h2>
+      <button onclick="descargarCSV()">⬇ Descargar CSV</button>
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Nombre</th>
+            <th>Huella</th>
+            <th>PIN</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+<script src="script.js"></script>
 </body>
 </html>
