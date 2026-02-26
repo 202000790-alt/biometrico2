@@ -1,33 +1,60 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard Biométrico IMPLACOR</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>IMPLACOR - Registros</title>
 </head>
 <body>
 
-  <div class="container">
-    <h1>📊 Reloj Biométrico IMPLACOR</h1>
+<h2>Filtrar registros por trabajador</h2>
 
-    <div class="card">
-      <h2>Registros de Acceso</h2>
-      <button onclick="descargarCSV()">⬇ Descargar CSV</button>
-      <table id="tabla">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Nombre</th>
-            <th>Huella</th>
-            <th>PIN</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
+<button onclick="cargarCSV()">Cargar CSV</button>
+<br><br>
 
-<script src="script.js"></script>
+<select id="trabajadores"></select>
+<button onclick="filtrar()">Ordenar</button>
+
+<script>
+let datos = [];
+
+async function cargarCSV() {
+    const url = "https://raw.githubusercontent.com/202000790-alt/biometrico2/main/registros.csv";
+    const response = await fetch(url);
+    const text = await response.text();
+
+    datos = text.trim().split("\n").map(line => line.split(","));
+
+    let nombres = [...new Set(datos.slice(1).map(row => row[2]))];
+
+    let select = document.getElementById("trabajadores");
+    select.innerHTML = "";
+
+    nombres.forEach(nombre => {
+        let option = document.createElement("option");
+        option.value = nombre;
+        option.text = nombre;
+        select.appendChild(option);
+    });
+
+    alert("CSV cargado correctamente");
+}
+
+function filtrar() {
+    let nombre = document.getElementById("trabajadores").value;
+
+    let filtrado = datos.filter((row, index) => 
+        index === 0 || row[2] === nombre
+    );
+
+    let csv = filtrado.map(row => row.join(",")).join("\n");
+
+    let blob = new Blob([csv], { type: "text/csv" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = nombre + "_registros.csv";
+    link.click();
+}
+</script>
+
 </body>
 </html>
