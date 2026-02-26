@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>IMPLACOR - Registros</title>
+
+<style>
+body { font-family: Arial; text-align:center; }
+button { padding:8px 15px; margin:5px; }
+select { padding:5px; }
+</style>
+
 </head>
 <body>
 
@@ -12,17 +19,23 @@
 <br><br>
 
 <select id="trabajadores"></select>
-<button onclick="filtrar()">Ordenar</button>
+<button onclick="filtrar()">Ordenar y Descargar</button>
 
 <script>
+
 let datos = [];
 
 async function cargarCSV() {
+
     const url = "https://raw.githubusercontent.com/202000790-alt/biometrico2/main/registros.csv";
     const response = await fetch(url);
     const text = await response.text();
 
     datos = text.trim().split("\n").map(line => line.split(","));
+
+    // Asumimos formato:
+    // Fecha,Hora,Nombre
+    // 0     1     2
 
     let nombres = [...new Set(datos.slice(1).map(row => row[2]))];
 
@@ -40,23 +53,7 @@ async function cargarCSV() {
 }
 
 function filtrar() {
-    let nombre = document.getElementById("trabajadores").value;
 
-    let filtrado = datos.filter((row, index) => 
-        index === 0 || row[2] === nombre
-    );
-
-    let csv = filtrado.map(row => row.join(",")).join("\n");
-
-    let blob = new Blob([csv], { type: "text/csv" });
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = nombre + "_registros.csv";
-    link.click();
-}
-</script>
-<script>
-function filtrar() {
     let nombre = document.getElementById("trabajadores").value;
 
     let registros = datos
@@ -66,6 +63,7 @@ function filtrar() {
     let agrupado = {};
 
     registros.forEach(row => {
+
         let fecha = row[0];
         let hora = row[1];
 
@@ -78,8 +76,9 @@ function filtrar() {
 
     let resultado = "Fecha,Ingreso,Almuerzo,Retorno,Salida\n";
 
-    for (let fecha in agrupado) {
-        let horas = agrupado[fecha].sort();
+    Object.keys(agrupado).sort().forEach(fecha => {
+
+        let horas = agrupado[fecha].sort(); // ordena cronológicamente
 
         let ingreso  = horas[0] || "";
         let almuerzo = horas[1] || "";
@@ -87,7 +86,7 @@ function filtrar() {
         let salida   = horas[3] || "";
 
         resultado += `${fecha},${ingreso},${almuerzo},${retorno},${salida}\n`;
-    }
+    });
 
     let blob = new Blob([resultado], { type: "text/csv" });
     let link = document.createElement("a");
@@ -95,6 +94,7 @@ function filtrar() {
     link.download = nombre + "_ordenado.csv";
     link.click();
 }
+
 </script>
 
 </body>
