@@ -3,153 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMPLACOR - Control Biométrico</title>
+<title>Registro Biométrico</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f1f1f1;
+    margin: 0;
+    padding: 20px;
 }
 
-.card{
-  background:white;
-  width:95%;
-  max-width:900px;
-  border-radius:15px;
-  padding:30px;
-  box-shadow:0 15px 30px rgba(0,0,0,0.3);
+h1 {
+    text-align: center;
+    color: #333;
 }
 
-h1{
-  text-align:center;
-  margin:0;
-  color:#1e3c72;
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.subtitle{
-  text-align:center;
-  color:#555;
-  margin-bottom:20px;
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
 }
 
-button{
-  background:#2a5298;
-  color:white;
-  border:none;
-  padding:12px 20px;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
+th {
+    background-color: #4183c4;
+    color: #fff;
 }
 
-button:hover{
-  background:#1e3c72;
-}
-
-.actions{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-th, td{
-  padding:8px;
-  border-bottom:1px solid #ddd;
-  text-align:center;
-}
-
-th{
-  background:#1e3c72;
-  color:white;
-}
-
-.footer{
-  text-align:center;
-  margin-top:20px;
-  font-size:12px;
-  color:#888;
+tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 </style>
 </head>
 
 <body>
+<h1>Registro Biométrico</h1>
 
-<div class="card">
-  <h1>IMPLACOR</h1>
-  <div class="subtitle">Sistema de Control Biométrico</div>
-
-  <div class="actions">
-    <a href="registros.csv" download>
-      <button>Descargar CSV</button>
-    </a>
-
-    <div>
-      Registros cargados: <strong id="contador">0</strong>
-    </div>
-  </div>
-
-  <table id="tabla">
+<table id="tabla">
     <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Nombre</th>
-        <th>Huella ID</th>
-        <th>PIN</th>
-      </tr>
+        <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Nombre</th>
+            <th>Huella ID</th>
+            <th>PIN</th>
+        </tr>
     </thead>
-    <tbody></tbody>
-  </table>
-
-  <div class="footer">
-    ESP32 IoT • Proyecto IMPLACOR
-  </div>
-</div>
+    <tbody>
+        <!-- Aquí se cargarán los datos desde CSV -->
+    </tbody>
+</table>
 
 <script>
-async function cargarCSV(){
-  try{
-    const response = await fetch("registros.csv");
-    const data = await response.text();
+// Cambia el nombre del archivo CSV si es otro
+const csvFile = "datos.csv";
 
-    const rows = data.trim().split("\n");
-    const tbody = document.querySelector("#tabla tbody");
-    tbody.innerHTML = "";
+// Función para leer CSV y cargarlo en la tabla
+fetch(csvFile)
+    .then(response => response.text())
+    .then(data => {
+        const filas = data.split('\n');
+        const tbody = document.querySelector('#tabla tbody');
 
-    // Ignora encabezado
-    for(let i=1; i<rows.length; i++){
-      const cols = rows[i].split(",");
-      const tr = document.createElement("tr");
+        filas.forEach(fila => {
+            if(fila.trim() === "") return; // saltar filas vacías
+            const columnas = fila.split(',');
+            const tr = document.createElement('tr');
 
-      cols.forEach(col=>{
-        const td = document.createElement("td");
-        td.textContent = col;
-        tr.appendChild(td);
-      });
+            columnas.forEach(col => {
+                const td = document.createElement('td');
+                td.textContent = col.trim();
+                tr.appendChild(td);
+            });
 
-      tbody.appendChild(tr);
-    }
-
-    document.getElementById("contador").textContent = rows.length - 1;
-
-  }catch(error){
-    console.log("No se pudo cargar el CSV");
-  }
-}
-
-cargarCSV();
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(error => {
+        console.error("No se pudo cargar el CSV:", error);
+    });
 </script>
-
 </body>
 </html>
