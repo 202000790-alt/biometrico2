@@ -1,95 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registro Biométrico</title>
-
-<style>
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f1f1f1;
-    margin: 0;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-table {
-    margin: 20px auto;
-    border-collapse: collapse;
-    width: 90%;
-    max-width: 800px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-}
-
-th {
-    background-color: #4183c4;
-    color: #fff;
-}
-
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-</style>
+<title>Descargar Datos</title>
 </head>
-
 <body>
-<h1>Registro Biométrico</h1>
-
-<table id="tabla">
-    <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Nombre</th>
-            <th>Huella ID</th>
-            <th>PIN</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Aquí se cargarán los datos desde CSV -->
-    </tbody>
-</table>
-
-<script>
-// Cambia el nombre del archivo CSV si es otro
-const csvFile = "datos.csv";
-
-// Función para leer CSV y cargarlo en la tabla
-fetch(csvFile)
-    .then(response => response.text())
-    .then(data => {
-        const filas = data.split('\n');
-        const tbody = document.querySelector('#tabla tbody');
-
-        filas.forEach(fila => {
-            if(fila.trim() === "") return; // saltar filas vacías
-            const columnas = fila.split(',');
-            const tr = document.createElement('tr');
-
-            columnas.forEach(col => {
-                const td = document.createElement('td');
-                td.textContent = col.trim();
-                tr.appendChild(td);
-            });
-
-            tbody.appendChild(tr);
-        });
-    })
-    .catch(error => {
-        console.error("No se pudo cargar el CSV:", error);
-    });
-</script>
+<h1>Descargar CSV</h1>
+<a href="https://api.github.com/repos/202000790-alt/biometrico2/contents/registros.csv" download>
+  <button>Descargar CSV</button>
+</a>
 </body>
 </html>
