@@ -55,6 +55,48 @@ function filtrar() {
     link.click();
 }
 </script>
+<script>
+function filtrar() {
+    let nombre = document.getElementById("trabajadores").value;
+
+    let registros = datos
+        .slice(1)
+        .filter(row => row[2] === nombre);
+
+    let agrupado = {};
+
+    registros.forEach(row => {
+        let fecha = row[0];
+        let hora = row[1];
+
+        if (!agrupado[fecha]) {
+            agrupado[fecha] = [];
+        }
+
+        agrupado[fecha].push(hora);
+    });
+
+    let resultado = "Fecha,Ingreso,Almuerzo,Retorno,Salida\n";
+
+    for (let fecha in agrupado) {
+        let horas = agrupado[fecha].sort();
+
+        let ingreso  = horas[0] || "";
+        let almuerzo = horas[1] || "";
+        let retorno  = horas[2] || "";
+        let salida   = horas[3] || "";
+
+        resultado += `${fecha},${ingreso},${almuerzo},${retorno},${salida}\n`;
+    }
+
+    let blob = new Blob([resultado], { type: "text/csv" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = nombre + "_ordenado.csv";
+    link.click();
+}
+</script>
 
 </body>
 </html>
+
