@@ -177,27 +177,48 @@ function eliminarNombre(index) {
 
 async function guardarNombres() {
 
-    const nuevoContenido = btoa(nombresLista.join("\n"));
+    const token = "TU_TOKEN_AQUI";
+    const repo = "202000790-alt/biometrico2";
+    const path = "nombres.txt";
 
+    // 1️⃣ Obtener SHA actual
+    const getResponse = await fetch(
+        `https://api.github.com/repos/${repo}/contents/${path}`,
+        {
+            headers: {
+                Authorization: `token ${token}`
+            }
+        }
+    );
+
+    const data = await getResponse.json();
+    const sha = data.sha;
+
+    // 2️⃣ Obtener nombres actuales del textarea o arreglo
+    let nombres = obtenerNombresDesdeLista(); // TU función
+    let contenido = nombres.join("\n");
+
+    // 3️⃣ Convertir a Base64
+    let contenidoBase64 = btoa(unescape(encodeURIComponent(contenido)));
+
+    // 4️⃣ Enviar actualización
     await fetch(
-        `https://api.github.com/repos/202000790-alt/biometrico2/contents/nombres.txt?ref=gh-pages`,
+        `https://api.github.com/repos/${repo}/contents/${path}`,
         {
             method: "PUT",
             headers: {
-                "Authorization": "token " + token,
+                Authorization: `token ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                message: "Actualizando nombres desde panel web",
-                content: nuevoContenido,
-                sha: archivoSHA
+                message: "Actualizar nombres",
+                content: contenidoBase64,
+                sha: sha
             })
         }
     );
 
-    alert("Nombres actualizados correctamente en GitHub");
-
-    cargarNombres(); // recargar lista y SHA actualizado
+    alert("Nombres actualizados correctamente");
 }
 
 // cargar nombres al abrir la página
@@ -207,6 +228,7 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
 
