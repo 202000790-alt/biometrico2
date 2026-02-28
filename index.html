@@ -176,12 +176,13 @@ function eliminarNombre(index) {
 }
 
 
-async function guardarNombres(listaNombres) {
-
+async function guardarNombres() {
     const token = "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";
     const owner = "202000790-alt";
-    const repo = "biometrico2";
-    const path = "nombres.txt";
+
+
+    const owner = usuario;
+    const path = archivoNombres;
 
     // 1️⃣ Obtener SHA actual
     const getResponse = await fetch(
@@ -202,15 +203,12 @@ async function guardarNombres(listaNombres) {
     const sha = getData.sha;
 
     // 2️⃣ Construir contenido completo
-    const contenido = listaNombres.join("\n");
+    const contenido = nombresLista.join("\n");
 
-    // 3️⃣ Convertir correctamente a Base64
-    const contenidoBase64 = btoa(
-        new TextEncoder().encode(contenido)
-            .reduce((data, byte) => data + String.fromCharCode(byte), '')
-    );
+    // 3️⃣ Convertir a Base64
+    const contenidoBase64 = btoa(unescape(encodeURIComponent(contenido)));
 
-    // 4️⃣ Enviar PUT correcto
+    // 4️⃣ Enviar PUT
     const putResponse = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
         {
@@ -244,6 +242,7 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
 
