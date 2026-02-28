@@ -180,7 +180,7 @@ async function guardarNombres() {
     const nuevoContenido = btoa(nombresLista.join("\n"));
 
     await fetch(
-        `https://api.github.com/repos/${usuario}/${repo}/contents/${archivoNombres}`,
+        `https://api.github.com/repos/202000790-alt/biometrico2/contents/nombres.txt?ref=gh-pages`,
         {
             method: "PUT",
             headers: {
@@ -207,5 +207,6 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
