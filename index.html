@@ -215,6 +215,7 @@ async function guardarNombres() {
                 message: "Actualizar nombres",
                 content: contenidoBase64,
                 sha: sha
+                branch: "main"
             })
         }
     );
@@ -227,6 +228,8 @@ async function guardarNombres() {
     } else {
         alert("Error actualizando archivo");
     }
+    console.log("STATUS:", putResponse.status);
+console.log("RESPUESTA:", putData);
 }
 
 // cargar nombres al abrir la página
@@ -236,6 +239,7 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
 
