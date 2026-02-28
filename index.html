@@ -175,15 +175,17 @@ function eliminarNombre(index) {
     mostrarLista();
 }
 
-async function guardarNombres() {
+
+async function guardarNombres(listaNombres) {
 
     const token = "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";
-    const repo = "202000790-alt/biometrico2";
+    const owner = "202000790-alt";
+    const repo = "biometrico2";
     const path = "nombres.txt";
 
     // 1️⃣ Obtener SHA actual
     const getResponse = await fetch(
-        `https://api.github.com/repos/${repo}/contents/${path}`,
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
         {
             headers: {
                 Authorization: `token ${token}`
@@ -191,19 +193,26 @@ async function guardarNombres() {
         }
     );
 
-    const data = await getResponse.json();
-    const sha = data.sha;
+    if(!getResponse.ok){
+        alert("Error obteniendo SHA");
+        return;
+    }
 
-    // 2️⃣ Obtener nombres actuales del textarea o arreglo
-    let nombres = obtenerNombresDesdeLista(); // TU función
-    let contenido = nombres.join("\n");
+    const getData = await getResponse.json();
+    const sha = getData.sha;
 
-    // 3️⃣ Convertir a Base64
-    let contenidoBase64 = btoa(unescape(encodeURIComponent(contenido)));
+    // 2️⃣ Construir contenido completo
+    const contenido = listaNombres.join("\n");
 
-    // 4️⃣ Enviar actualización
-    await fetch(
-        `https://api.github.com/repos/${repo}/contents/${path}`,
+    // 3️⃣ Convertir correctamente a Base64
+    const contenidoBase64 = btoa(
+        new TextEncoder().encode(contenido)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+
+    // 4️⃣ Enviar PUT correcto
+    const putResponse = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
         {
             method: "PUT",
             headers: {
@@ -218,7 +227,14 @@ async function guardarNombres() {
         }
     );
 
-    alert("Nombres actualizados correctamente");
+    const putData = await putResponse.json();
+    console.log(putData);
+
+    if(putResponse.ok){
+        alert("Archivo actualizado correctamente");
+    } else {
+        alert("Error actualizando archivo");
+    }
 }
 
 // cargar nombres al abrir la página
@@ -228,6 +244,7 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
 
