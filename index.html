@@ -177,16 +177,10 @@ function eliminarNombre(index) {
 
 
 async function guardarNombres() {
-    const token = "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";
-    const owner = "202000790-alt";
-
-
-    const owner = usuario;
-    const path = archivoNombres;
 
     // 1️⃣ Obtener SHA actual
     const getResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        `https://api.github.com/repos/${usuario}/${repo}/contents/${archivoNombres}`,
         {
             headers: {
                 Authorization: `token ${token}`
@@ -202,7 +196,7 @@ async function guardarNombres() {
     const getData = await getResponse.json();
     const sha = getData.sha;
 
-    // 2️⃣ Construir contenido completo
+    // 2️⃣ Construir contenido
     const contenido = nombresLista.join("\n");
 
     // 3️⃣ Convertir a Base64
@@ -210,7 +204,7 @@ async function guardarNombres() {
 
     // 4️⃣ Enviar PUT
     const putResponse = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        `https://api.github.com/repos/${usuario}/${repo}/contents/${archivoNombres}`,
         {
             method: "PUT",
             headers: {
@@ -242,6 +236,7 @@ cargarNombres();
 
 </body>
 </html>
+
 
 
 
