@@ -113,14 +113,25 @@ let nombresLista = [];
 
 async function cargarNombres() {
 
+    console.log("Intentando cargar nombres...");
+
     try {
 
         const response = await fetch(
-            `https://api.github.com/repos/${usuario}/${repo}/contents/${archivoNombres}?ref=${branch}`
+            `https://api.github.com/repos/${usuario}/${repo}/contents/${archivoNombres}?ref=${branch}`,
+            {
+                headers: {
+                    Authorization: `token ${token}`
+                }
+            }
         );
 
+        console.log("Status lectura:", response.status);
+
         if (!response.ok) {
-            console.log("No se pudo leer nombres.txt");
+            const errorText = await response.text();
+            console.log("Error lectura:", errorText);
+            alert("No se pudo leer nombres.txt");
             return;
         }
 
@@ -129,14 +140,17 @@ async function cargarNombres() {
         const base64 = data.content.replace(/\n/g, "");
         const contenido = decodeURIComponent(escape(atob(base64)));
 
-        nombresLista = contenido.split("\n")
-                                 .map(n => n.trim())
-                                 .filter(n => n !== "");
+        nombresLista = contenido
+            .split("\n")
+            .map(n => n.trim())
+            .filter(n => n !== "");
+
+        console.log("Nombres cargados:", nombresLista);
 
         mostrarLista();
 
     } catch(error) {
-        console.log("Error leyendo nombres:", error);
+        console.log("Error general:", error);
     }
 }
 
@@ -231,3 +245,4 @@ cargarNombres();
 
 </body>
 </html>
+
